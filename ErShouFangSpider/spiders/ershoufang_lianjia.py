@@ -5,7 +5,7 @@ import scrapy
 
 from scrapy.http.response.html import HtmlResponse
 from scrapy.selector.unified import Selector
-from ..items import ErShouFangItem
+from ..items import EsfLianjiaItem
 from ..util import ua
 from ..util.config import LianJiaConfig
 
@@ -44,10 +44,10 @@ class LianjiaErShowFangSpider(scrapy.Spider):
         if next_page is not None:
             yield next_page
 
-    def _parse_house_item(self, selector: Selector):
-        fang = ErShouFangItem()
+    def _parse_house_item(self, selector: Selector) -> EsfLianjiaItem:
+        fang = EsfLianjiaItem()
         fang['url'] = selector.xpath('div[1]/div[1]/a/@href').extract_first()
-        if fang['url'] == None:
+        if fang['url'] is None:
             return None
         fang['title'] = selector.xpath('div[1]/div[1]/a/text()').extract_first()
         fang['xiaoqu'] = selector.xpath('div[1]/div[2]/div/a[1]/text()').extract_first()
@@ -68,7 +68,8 @@ class LianjiaErShowFangSpider(scrapy.Spider):
         fang['follow_info'] = follow_info[0].strip() if len(follow_info) > 0 else ''
         fang['upload_time'] = follow_info[1].strip() if len(follow_info) > 1 else ''
         # 价格信息
-        fang['total_price'] = selector.xpath('div[1]/div[6]/div[1]').xpath('string(.)').extract_first()
+        total_price = selector.xpath('div[1]/div[6]/div[1]').xpath('string(.)').extract_first()
+        fang['total_price'] = ''.join(re.findall(r"\d+", total_price))
         unit_price: str = selector.xpath('div[1]/div[6]/div[2]/span/text()').extract_first()
         fang['unit_price'] = ''.join(re.findall(r"\d+", unit_price))
         return fang

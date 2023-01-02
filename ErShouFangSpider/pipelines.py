@@ -10,7 +10,7 @@ import os.path
 from .util import path
 from .util.config import LianJiaConfig
 
-from .items import ErShouFangItem
+from .items import EsfLianjiaItem
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
@@ -41,10 +41,10 @@ class ErShouFangPipeline:
         self.cur_csv_file.close()
 
     def process_item(self, item, spider):
-        if isinstance(item, ErShouFangItem):
-            fang: ErShouFangItem = item
+        if isinstance(item, EsfLianjiaItem):
+            fang: EsfLianjiaItem = item
             if len(self.cur_url_list) == 0:
-                self.csv_writer.writerow(ErShouFangItem.csv_headers())
+                self.csv_writer.writerow(EsfLianjiaItem.csv_headers())
                 self.cur_url_list.append('header')
             if fang['url'] not in self.cur_url_list:
                 self.cur_url_list.append(fang['url'])
