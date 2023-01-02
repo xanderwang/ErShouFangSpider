@@ -24,13 +24,13 @@ class ErShouFangItem(scrapy.Item):
     # 封面
     poster = scrapy.Field()
     # 户型：2室2厅
-    house_rooms = scrapy.Field()
+    house_huxing = scrapy.Field()
     # 房间面积：
-    house_size = scrapy.Field()
+    house_area = scrapy.Field()
     # 朝向
     house_chaoxiang = scrapy.Field()
     # 房间楼层
-    house_level = scrapy.Field()
+    house_floor = scrapy.Field()
     # 房屋建造时间：
     house_create_time = scrapy.Field()
     # 热度：关注信息
@@ -38,19 +38,19 @@ class ErShouFangItem(scrapy.Item):
     # 发布时间
     upload_time = scrapy.Field()
     # 总价
-    zongjia = scrapy.Field()
+    total_price = scrapy.Field()
     # 单价
-    danjia = scrapy.Field()
+    unit_price = scrapy.Field()
 
     @staticmethod
     def csv_headers() -> list[str]:
-        return ['链接', '名称', '小区', '小区链接', '板块', '板块链接', '封面', '户型', '房间面积', '朝向', '楼层',
-                '建造时间', '热度', '发布时间', '总价', '单价']
+        return ['链接', '名称', '小区', '小区链接', '板块', '板块链接', '封面', '户型', '面积(平米)', '朝向', '楼层',
+                '建造时间', '热度', '发布时间', '总价(万)', '单价(元)']
 
     def csv_row(self) -> list[str]:
         return [self['url'], self['title'], self['xiaoqu'], self['xiaoqu_url'], self['bankuai'], self['bankuai_url'],
-                self['poster'], self['house_rooms'], self['house_size'], self['house_chaoxiang'], self['house_level'],
-                self['house_create_time'], self['follow_info'], self['upload_time'], self['zongjia'], self['danjia']]
+                self['poster'], self['house_huxing'], self['house_area'], self['house_chaoxiang'], self['house_floor'],
+                self['house_create_time'], self['follow_info'], self['upload_time'], self['total_price'], self['unit_price']]
 
 
 class ErShouFangDetailItem(scrapy.Item):

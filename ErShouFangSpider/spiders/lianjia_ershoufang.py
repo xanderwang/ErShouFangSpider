@@ -9,11 +9,10 @@ from ..items import ErShouFangItem
 from ..util import ua
 from ..util.config import LianJiaConfig
 
-
-def _get_headers():
-    return {
-        'User-Agent': ua.get_ua()
-    }
+_header = {
+    'User-Agent': ua.get_ua(),
+    'Referer': 'https://sh.lianjia.com/ershoufang/'
+}
 
 
 class LianjiaErShowFangSpider(scrapy.Spider):
@@ -26,7 +25,7 @@ class LianjiaErShowFangSpider(scrapy.Spider):
         start_url = LianJiaConfig.LAST_URL
         if len(start_url) == 0:
             start_url = 'https://sh.lianjia.com/ershoufang/'
-        yield scrapy.Request(url=start_url, headers=_get_headers())
+        yield scrapy.Request(url=start_url, headers=_header)
 
     def parse(self, response: HtmlResponse):
         LianJiaConfig.LAST_URL = response.url
@@ -58,18 +57,20 @@ class LianjiaErShowFangSpider(scrapy.Spider):
         fang['poster'] = selector.xpath('a/img[2]/@src').extract_first()
         # 2室2厅 | 87.78平米 | 南 | 精装 | 低楼层(共18层) | 2012年建 | 板楼
         house_info = selector.xpath('div[1]/div[3]/div/text()').extract_first().split('|')
-        fang['house_rooms'] = house_info[0].strip() if len(house_info) > 0 else ''
-        fang['house_size'] = house_info[1].strip() if len(house_info) > 1 else ''
+        fang['house_huxing'] = house_info[0].strip() if len(house_info) > 0 else ''
+        area: str = house_info[1].strip() if len(house_info) > 1 else ''
+        fang['house_area'] = ''.join(re.findall(r"\d+.\d+", area))
         fang['house_chaoxiang'] = house_info[2].strip() if len(house_info) > 2 else ''
-        fang['house_level'] = house_info[4].strip() if len(house_info) > 4 else ''
+        fang['house_floor'] = house_info[4].strip() if len(house_info) > 4 else ''
         fang['house_create_time'] = house_info[5].strip() if len(house_info) > 5 else ''
         # 9人关注 / 1个月以前发布
         follow_info = selector.xpath('div[1]/div[4]/text()').extract_first().split('/')
         fang['follow_info'] = follow_info[0].strip() if len(follow_info) > 0 else ''
         fang['upload_time'] = follow_info[1].strip() if len(follow_info) > 1 else ''
         # 价格信息
-        fang['zongjia'] = selector.xpath('div[1]/div[6]/div[1]').xpath('string(.)').extract_first()
-        fang['danjia'] = selector.xpath('div[1]/div[6]/div[2]/span/text()').extract_first()
+        fang['total_price'] = selector.xpath('div[1]/div[6]/div[1]').xpath('string(.)').extract_first()
+        unit_price: str = selector.xpath('div[1]/div[6]/div[2]/span/text()').extract_first()
+        fang['unit_price'] = ''.join(re.findall(r"\d+", unit_price))
         return fang
 
     def _fake_next_page(self, response: HtmlResponse):
@@ -83,8 +84,9 @@ class LianjiaErShowFangSpider(scrapy.Spider):
                 url_page = int(re_find_list[0])
             next_page = max(cur_page, url_page) + 1
             total_page = int(page_data['totalPage'])
+            _header['Referer'] = response.url
             if next_page <= total_page:
-                return scrapy.Request(url=f'https://sh.lianjia.com/ershoufang/pg/{next_page}', headers=_get_headers(),
+                return scrapy.Request(url=f'https://sh.lianjia.com/ershoufang/pg{next_page}', headers=_header,
                                       callback=self.parse)
         except Exception as e:
             print('fake next page error!', e)

@@ -31,8 +31,8 @@ class ErShouFangPipeline:
         """加载当前的 csv """
         with codecs.open(self.csv_file_path, 'r', 'utf_8_sig') as csv_file:
             csv_reader = csv.reader(csv_file)
-            headers = next(csv_reader)
-            if headers is None:
+            headers = next(csv_reader, "")
+            if headers is None or headers == "":
                 return
             for item in csv_reader:
                 self.cur_url_list.append(item[0])
