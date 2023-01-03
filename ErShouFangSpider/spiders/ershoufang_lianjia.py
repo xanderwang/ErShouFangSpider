@@ -7,7 +7,7 @@ from scrapy.http.response.html import HtmlResponse
 from scrapy.selector.unified import Selector
 from ..items import EsfLianjiaItem
 from ..util import ua
-from ..util.config import LianJiaConfig
+from ..util.config import CONFIG_LJ
 
 _header = {
     'User-Agent': ua.get_ua(),
@@ -22,14 +22,14 @@ class LianjiaErShowFangSpider(scrapy.Spider):
     allowed_domains = ['lianjia.com']
 
     def start_requests(self):
-        start_url = LianJiaConfig.LAST_URL
+        start_url = CONFIG_LJ.LAST_URL
         if len(start_url) == 0:
             start_url = 'https://sh.lianjia.com/ershoufang/'
         yield scrapy.Request(url=start_url, headers=_header)
 
     def parse(self, response: HtmlResponse):
-        LianJiaConfig.LAST_URL = response.url
-        LianJiaConfig.save_config()
+        CONFIG_LJ.LAST_URL = response.url
+        CONFIG_LJ.save_config()
         # 爬取列表
         house_list = response.xpath('//*[@id="content"]/div[1]/ul/li')
         for item_selector in house_list:

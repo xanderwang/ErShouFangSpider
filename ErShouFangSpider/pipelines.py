@@ -8,7 +8,7 @@ import json
 import os.path
 
 from .util import path
-from .util.config import LianJiaConfig
+from .util.config import CONFIG_LJ
 
 from .items import EsfLianjiaItem
 
@@ -19,7 +19,7 @@ from itemadapter import ItemAdapter
 class ErShouFangPipeline:
 
     def __init__(self):
-        self.csv_file_path = os.path.join(path.DATA_PATH, 'lianjia', f'{LianJiaConfig.LAST_DATE}.csv')
+        self.csv_file_path = os.path.join(path.DATA_PATH, 'lianjia', f'{CONFIG_LJ.LAST_DATE}.csv')
         path.make_dir(self.csv_file_path)
         # a 表示追加, codecs 用于支持中文写入
         self.cur_csv_file = codecs.open(self.csv_file_path, 'a', 'utf_8_sig')
