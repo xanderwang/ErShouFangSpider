@@ -8,12 +8,11 @@ from ..items import Esf5i5jItem
 
 _header = {
     'User-Agent': ua.get_ua(),
-    # 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.54',
 }
 
 
 class ErShouFang5i5jSpider(scrapy.Spider):
-    name = '5i5j'
+    name = 'esf_5i5j'
     allowed_domains = ['5i5j.com']
 
     def start_requests(self):
@@ -33,8 +32,7 @@ class ErShouFang5i5jSpider(scrapy.Spider):
         # 模拟翻页
         next_page = self._fake_next_page(response)
         if next_page is not None:
-            # yield next_page
-            pass
+            yield next_page
 
     def _parse_house_item(self, response: HtmlResponse, selector: Selector):
         fang = Esf5i5jItem()
@@ -71,5 +69,7 @@ class ErShouFang5i5jSpider(scrapy.Spider):
 
     def _fake_next_page(self, response: HtmlResponse):
         next_url = response.xpath('/html/body/div[6]/div[1]/div[3]/div[2]/a[1]/@href').extract_first()
+        if len(next_url) == 0:
+            return None
         next_url = response.urljoin(next_url)
-        return scrapy.Request(url=next_url, headers=_header, callback=self.parse)
+        return scrapy.Request(url=next_url, headers=_header, dont_filter=True)

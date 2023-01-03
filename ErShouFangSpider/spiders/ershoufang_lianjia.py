@@ -17,7 +17,7 @@ _header = {
 
 class LianjiaErShowFangSpider(scrapy.Spider):
     # 名称
-    name = 'lianjia_ershoufang'
+    name = 'esf_lianjia'
     # 允许域名
     allowed_domains = ['lianjia.com']
 

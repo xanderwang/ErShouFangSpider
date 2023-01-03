@@ -9,8 +9,10 @@ import os.path
 
 from .util import path
 from .util.config import CONFIG_LJ
+from .util.config import CONFIG_5I5J
 
 from .items import EsfLianjiaItem
+from .items import Esf5i5jItem
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
@@ -49,4 +51,6 @@ class ErShouFangPipeline:
             if fang['url'] not in self.cur_url_list:
                 self.cur_url_list.append(fang['url'])
                 self.csv_writer.writerow(fang.csv_row())
+        elif isinstance(item, Esf5i5jItem):
+            pass
         return item

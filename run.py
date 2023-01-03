@@ -6,6 +6,6 @@ import sys
 
 if __name__ == '__main__':
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    # execute(['scrapy', 'crawl', 'lianjia_ershoufang', '--nolog'])
-    # execute(['scrapy', 'crawl', 'lianjia_ershoufang'])
-    execute(['scrapy', 'crawl', '5i5j'])
+    # execute(['scrapy', 'crawl', 'esf_lianjia', '--nolog'])
+    # execute(['scrapy', 'crawl', 'esf_lianjia'])
+    execute(['scrapy', 'crawl', 'esf_5i5j'])
