@@ -2,14 +2,13 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-import codecs
-import csv
-import json
 import os.path
 
 from .util import path
 from .util.config import CONFIG_LJ
 from .util.config import CONFIG_5I5J
+
+from .util.data import CsvData
 
 from .items import EsfLianjiaItem
 from .items import Esf5i5jItem
@@ -21,36 +20,22 @@ from itemadapter import ItemAdapter
 class ErShouFangPipeline:
 
     def __init__(self):
-        self.csv_file_path = os.path.join(path.DATA_PATH, 'lianjia', f'{CONFIG_LJ.LAST_DATE}.csv')
-        path.make_dir(self.csv_file_path)
-        # a 表示追加, codecs 用于支持中文写入
-        self.cur_csv_file = codecs.open(self.csv_file_path, 'a', 'utf_8_sig')
-        self.csv_writer = csv.writer(self.cur_csv_file)
-        self.cur_url_list = []
-        self._load_cur_csv()
-
-    def _load_cur_csv(self):
-        """加载当前的 csv """
-        with codecs.open(self.csv_file_path, 'r', 'utf_8_sig') as csv_file:
-            csv_reader = csv.reader(csv_file)
-            headers = next(csv_reader, "")
-            if headers is None or headers == "":
-                return
-            for item in csv_reader:
-                self.cur_url_list.append(item[0])
-
-    def __del__(self):
-        self.cur_csv_file.close()
+        file_path_lianjia = os.path.join(path.DATA_PATH, 'lianjia', f'{CONFIG_LJ.LAST_DATE}.csv')
+        self.csv_lianjia = CsvData(file_path_lianjia)
+        file_path_5i5j = os.path.join(path.DATA_PATH, '5i5j', f'{CONFIG_5I5J.LAST_DATE}.csv')
+        self.csv_5i5j = CsvData(file_path_5i5j)
 
     def process_item(self, item, spider):
         if isinstance(item, EsfLianjiaItem):
             fang: EsfLianjiaItem = item
-            if len(self.cur_url_list) == 0:
-                self.csv_writer.writerow(EsfLianjiaItem.csv_headers())
-                self.cur_url_list.append('header')
-            if fang['url'] not in self.cur_url_list:
-                self.cur_url_list.append(fang['url'])
-                self.csv_writer.writerow(fang.csv_row())
+            if not self.csv_lianjia.has_recoder():
+                self.csv_lianjia.insert_item('headers', EsfLianjiaItem.csv_headers())
+            row_data = fang.csv_row()
+            self.csv_lianjia.insert_item(row_data[0], row_data)
         elif isinstance(item, Esf5i5jItem):
-            pass
+            fang: Esf5i5jItem = item
+            if not self.csv_5i5j.has_recoder():
+                self.csv_5i5j.insert_item('headers', Esf5i5jItem.csv_headers())
+            row_data = fang.csv_row()
+            self.csv_5i5j.insert_item(row_data[0], row_data)
         return item

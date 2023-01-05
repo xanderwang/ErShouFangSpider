@@ -1,5 +1,7 @@
 import json
+import random
 import re
+import time
 
 import scrapy
 
@@ -87,6 +89,7 @@ class LianjiaErShowFangSpider(scrapy.Spider):
             total_page = int(page_data['totalPage'])
             _header['Referer'] = response.url
             if next_page <= total_page:
+                time.sleep(random.uniform(1, 3))
                 return scrapy.Request(url=f'https://sh.lianjia.com/ershoufang/pg{next_page}', headers=_header,
                                       callback=self.parse)
         except Exception as e:

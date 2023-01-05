@@ -54,12 +54,12 @@ class BaseConfig(object):
 
 class ConfigLianJia(BaseConfig):
     def _file_name(self) -> str:
-        return "5i5j.json"
+        return "lianjia.json"
 
 
 class Config5i5j(BaseConfig):
     def _file_name(self) -> str:
-        return "lianjia.json"
+        return "5i5j.json"
 
 
 CONFIG_LJ = ConfigLianJia()
