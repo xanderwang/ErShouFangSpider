@@ -22,7 +22,7 @@ class ErShouFang5i5jSpider(scrapy.Spider):
         start_url = CONFIG_5I5J.LAST_URL
         if len(start_url) == 0:
             start_url = 'https://sh.5i5j.com/ershoufang/'
-        yield scrapy.Request(url=start_url, headers=_header, dont_filter=True)
+        yield scrapy.Request(url=start_url, headers=_header, dont_filter=True, callback=self.parse)
 
     def parse(self, response: HtmlResponse):
         CONFIG_5I5J.LAST_URL = response.url
@@ -79,4 +79,4 @@ class ErShouFang5i5jSpider(scrapy.Spider):
         next_url = response.urljoin(next_url)
         _header['Referer'] = response.url
         time.sleep(random.uniform(1, 3))
-        return scrapy.Request(url=next_url, headers=_header, dont_filter=True)
+        return scrapy.Request(url=next_url, headers=_header, dont_filter=True, callback=self.parse)

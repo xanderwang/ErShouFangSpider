@@ -53,4 +53,5 @@ class CsvData(BaseData):
             self.recoder_key_list.append(key)
 
     def __del__(self):
-        self.csv_file.close()
+        if self.csv_file is not None:
+            self.csv_file.close()
