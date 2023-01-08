@@ -17,7 +17,7 @@ _header = {
 }
 
 
-class LianjiaErShowFangSpider(scrapy.Spider):
+class ErShowFangLianJiaSpider(scrapy.Spider):
     # 名称
     name = 'esf_lianjia'
     # 允许域名
@@ -38,6 +38,7 @@ class LianjiaErShowFangSpider(scrapy.Spider):
             fang = self._parse_house_item(item_selector)
             if fang is None:
                 continue
+            # 保存数据
             yield fang
             # 抓取细节
             # yield scrapy.Request(url=fang['link'], headers=_get_headers(), callback=self._parse_house_detail)

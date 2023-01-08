@@ -11,6 +11,7 @@ from ..util.config import CONFIG_5I5J
 
 _header = {
     'User-Agent': ua.get_ua(),
+    'Referer': 'https://sh.5i5j.com/ershoufang/'
 }
 
 
@@ -33,6 +34,7 @@ class ErShouFang5i5jSpider(scrapy.Spider):
             fang = self._parse_house_item(response, item)
             if fang is None:
                 continue
+            # 保存数据
             yield fang
         # 模拟翻页
         next_page = self._fake_next_page(response)
