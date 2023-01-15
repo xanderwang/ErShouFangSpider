@@ -2,6 +2,7 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
+from typing import List
 
 import scrapy
 
@@ -41,11 +42,11 @@ class EsfLianjiaItem(scrapy.Item):
     unit_price = scrapy.Field()
 
     @staticmethod
-    def csv_headers() -> list[str]:
+    def csv_headers() -> List[str]:
         return ['链接', '名称', '小区', '小区链接', '板块', '板块链接', '封面', '户型', '面积(平米)', '朝向', '楼层',
                 '建造时间', '热度', '发布时间', '总价(万)', '单价(元)']
 
-    def csv_row(self) -> list[str]:
+    def csv_row(self) -> List[str]:
         return [self['url'], self['title'], self['xiaoqu'], self['xiaoqu_url'], self['bankuai'], self['bankuai_url'],
                 self['poster'], self['house_huxing'], self['house_area'], self['house_chaoxiang'], self['house_floor'],
                 self['house_create_time'], self['follow_info'], self['upload_time'], self['total_price'],
@@ -106,11 +107,11 @@ class Esf5i5jItem(scrapy.Item):
     unit_price = scrapy.Field()
 
     @staticmethod
-    def csv_headers() -> list[str]:
+    def csv_headers() -> List[str]:
         return ['链接', '名称', '小区', '小区链接', '板块', '地段', '封面', '户型', '面积(平米)', '朝向',
                 '楼层', '建造时间', '热度', '发布时间', '总价(万)', '单价(元)']
 
-    def csv_row(self) -> list[str]:
+    def csv_row(self) -> List[str]:
         return [self['url'], self['title'], self['xiaoqu'], self['xiaoqu_url'], self['bankuai'],
                 self['diduan'], self['poster'], self['house_huxing'], self['house_area'], self['house_chaoxiang'],
                 self['house_floor'], self['house_create_time'], self['follow_info'], self['upload_time'],
